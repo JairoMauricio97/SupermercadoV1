@@ -47,24 +47,27 @@ public class Conexion {
 			 return rs;
 		}
 		public void EjecutarConsulta(String sql) throws SQLException {
+			stmt= conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			stmt.executeUpdate(sql);
 		}
 		
 		public void AgregarElementos(String tabla, ArrayList<String> elementos) throws SQLException {
 			
 			System.out.println("Creando Statement");
-			
+			stmt= conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			String sql;
 			sql="insert into "+ tabla + "\r\n"
-				+"values \r\n";
+				+"values  (null,\r\n";
 			for( int i=0;i<elementos.size()-1;i++) {
 				
-				sql.concat("("+"'"+elementos.get(i)+"'"+", \r\n");
+				sql.concat("'"+elementos.get(i)+"'"+", \r\n");
+				System.out.println("elementos:"+elementos.get(i));
 			}
-			sql.concat("'"+elementos.get(elementos.size())+"'"+")\r\n");
-			sql.concat(";");
+			sql.concat("'"+elementos.get(elementos.size()-1)+"'"+");");
+			//sql.concat(";");
+			System.out.print("Ultimo elemento a cargar "+elementos.get(elementos.size()-1));
 			stmt.executeUpdate(sql);
-			System.out.print("valores agregados");
+			
 			
 		}
 		
