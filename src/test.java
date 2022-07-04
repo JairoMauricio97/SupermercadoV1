@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,13 +9,15 @@ public class test {
 	
 	static Scanner t=new Scanner(System.in);
 	static Conexion connn=new Conexion();
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, InterruptedException, IOException {
 		// TODO Auto-generated method stub
 
 		
 		System.out.println("\t----MENU PRINCIPAL----");
 		System.out.println("\t----1 INGRESAR---");
 		System.out.println("\t----2 REGISTRARSE---");
+		
+		
 		int opElegida=t.nextInt();
 
 		switch(opElegida) {
@@ -26,6 +29,7 @@ public class test {
 			String pass=t.next();
 			
 			Ingresar(correo,pass);
+			System.out.print("\033[H\033[2J"); 
 			break;
 		
 		default:
@@ -56,7 +60,6 @@ public class test {
 			String pass2=t.next();
 			ArrayList<String > listaadd=new ArrayList<String>();
 			
-			
 			if(pas.equals(pass2) && n.isEmpty()==false) {
 				//insert into Usuario values(null,"facund0","lopez","554","facu@gmail","1234",false,"2","1");
 				listaadd.add(n);
@@ -66,15 +69,16 @@ public class test {
 				listaadd.add(pas);
 				listaadd.add("0");
 				listaadd.add("2");
-				listaadd.add("1");
-				
-				String sql="insert into Usuario values(null,"+"'"+n+"'"+
-				","+"'"+ap+"'"+","+"'"+d+"'"+","+"'"+c+"'"+","+"'"+pas+"'"+","+0+","+2
-				+","+1+");";
-				
-				connn.EjecutarConsulta(sql);
-				//connn.AgregarElementos("Usuario", listaadd);
+				listaadd.add("1");	
+				connn.AgregarUsuario(listaadd);
 			
+				ResultSet r=connn.devolverConsulta("select idUsuario from Usuario where correo="+"'"+c+"'"+";");
+				if(r.next()) {
+					
+					connn.EjecutarConsulta("insert into Carrito values (null,"+r.getInt("idUsuario")+");");
+					
+				}
+				
 			}else {
 				System.out.print("Contraseñas incorrectas");
 			}

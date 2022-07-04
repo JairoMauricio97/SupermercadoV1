@@ -1,5 +1,6 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -46,29 +47,52 @@ public class Conexion {
 			ResultSet rs =stmt.executeQuery(sql);
 			 return rs;
 		}
+		
+		
 		public void EjecutarConsulta(String sql) throws SQLException {
 			stmt= conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			stmt.executeUpdate(sql);
 		}
 		
-		public void AgregarElementos(String tabla, ArrayList<String> elementos) throws SQLException {
-			
+		public void AgregarUsuario(ArrayList<String> elementos) throws SQLException {
 			System.out.println("Creando Statement");
 			stmt= conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			String sql;
-			sql="insert into "+ tabla + "\r\n"
-				+"values  (null,\r\n";
-			for( int i=0;i<elementos.size()-1;i++) {
-				
-				sql.concat("'"+elementos.get(i)+"'"+", \r\n");
-				System.out.println("elementos:"+elementos.get(i));
-			}
-			sql.concat("'"+elementos.get(elementos.size()-1)+"'"+");");
-			//sql.concat(";");
-			System.out.print("Ultimo elemento a cargar "+elementos.get(elementos.size()-1));
-			stmt.executeUpdate(sql);
+			sql="insert into Usuario (Nombre,Apellido,dni,correo,pass,EsFrecuente,idRol,idDomicilio) "+
+			" values (?,?,?,?,?,?,?,?)";
 			
+			  PreparedStatement preparedStmt = conn.prepareStatement(sql);
+		    
+		      preparedStmt.setString (1,elementos.get(0) );
+		      preparedStmt.setString (2,elementos.get(1) );
+		      preparedStmt.setString (3,elementos.get(2) );
+		      preparedStmt.setString (4,elementos.get(3) );
+		      preparedStmt.setString (5,elementos.get(4) );
+		      preparedStmt.setString (6,elementos.get(5) );
+		      preparedStmt.setInt (7,Integer.parseInt(elementos.get(6)) );
+		      preparedStmt.setInt (8,Integer.parseInt(elementos.get(7)));
+		      
+		      preparedStmt.execute();
+		      
+		}
+		public void AgregarProducto(ArrayList<String>elementos) throws SQLException {
+			System.out.println("Creando Statement");
+			stmt= conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			String sql;
+			sql="insert into Productos (Nombre,CodigoBarras,Stock,idCategoria,Precio) "+
+			" values (?,?,?,?,?)";
 			
+			 PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			    
+		      preparedStmt.setString (1,elementos.get(0) );
+		      preparedStmt.setString (2,elementos.get(1) );
+		      preparedStmt.setString (3,elementos.get(2) );
+		      preparedStmt.setInt (4,Integer.parseInt(elementos.get(3) ));
+		      preparedStmt.setString (5,elementos.get(4) );
+
+		      
+		      preparedStmt.execute();
+		      
 		}
 		
 
